@@ -1,25 +1,29 @@
-# first install requests: sudo pip3 install requests
 from flask import Flask
-import requests
-import sys
-import json
 
 app = Flask(__name__)
 
-@app.route('/temperature/<city>')
-def temperature(city):
-    payload = {'APPID': 'YOUR_API_KEY_HERE', 'q':city}
-    URL = 'http://api.openweathermap.org/data/2.5/weather'
-    response = requests.get(URL, params = payload)
-    if response.status_code == 200:
-        print('Success!', file = sys.stdout)
-    elif response.status_code == 404:
-        print('Not found.', file=sys.stdout)
+@app.route('/add/<float:num1>/<float:num2>')
+def add(num1, num2):
+    result = num1 + num2
+    return f"Result of addition: {result}"
 
-    response_json = response.json()
-    formatted_response = json.dumps(response_json, indent = 2)
-    print(formatted_response, file=sys.stdout)
+@app.route('/sub/<float:num1>/<float:num2>')
+def subtract(num1, num2):
+    result = num1 - num2
+    return f"Result of subtraction: {result}"
 
-    temperature = response_json['main']['temp']
-    s = '<h> Current temperature in {} is {:0.2f} Celsius. </s>'
-    return s.format(city, temperature - 273)
+@app.route('/mult/<float:num1>/<float:num2>')
+def multiply(num1, num2):
+    result = num1 * num2
+    return f"Result of multiplication: {result}"
+
+@app.route('/div/<float:num1>/<float:num2>')
+def divide(num1, num2):
+    if num2 != 0:
+        result = num1 / num2
+        return f"Result of division: {result}"
+    else:
+        return "Cannot divide by zero!"
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8080)
